@@ -1,12 +1,12 @@
 import 'package:mad1_shopping_3c/helpers/db_helper.dart';
 
 class Product {
-  int id;
-  String title;
+  late int id;
+  late String title;
   String? description;
-  double price;
+  late double price;
   String? imageUrl;
-  bool isFavorite;
+  late bool isFavorite;
 
   Product({
     required this.id,
@@ -17,6 +17,14 @@ class Product {
     this.isFavorite = false,
   });
 
+  Product.empty() {
+    id = 0;
+    title = '';
+    description = '';
+    price = 0;
+    imageUrl = '';
+    isFavorite = false;
+  }
   //utility method toMap - convert obj to map
   Map<String, dynamic> toMap() {
     return {

@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mad1_shopping_3c/components/app_drawer.dart';
 import 'package:mad1_shopping_3c/components/product_list_tile.dart';
 import 'package:mad1_shopping_3c/helpers/db_helper.dart';
 import 'package:mad1_shopping_3c/models/product.dart';
+import 'package:mad1_shopping_3c/screens/product_addedit.dart';
 
 class ProductManageScreen extends StatefulWidget {
   const ProductManageScreen({super.key});
@@ -17,6 +19,17 @@ class _ProductManageScreenState extends State<ProductManageScreen> {
     setState(() {});
   }
 
+  void insertItem(Product p) {
+    DbHelper.insertProduct(p);
+    setState(() {});
+  }
+
+  void updateItem(Product p) {
+    // DbHelper.updateProduct(p);
+    DbHelper.updateRaw();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,8 +38,9 @@ class _ProductManageScreenState extends State<ProductManageScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-              var q = await DbHelper.fetchQuery();
-              print(q);
+              Navigator.of(context).push(CupertinoPageRoute(
+                builder: (_) => ProductAddEditScreen(operation: insertItem),
+              ));
             },
             icon: Icon(Icons.add),
           ),
@@ -57,12 +71,23 @@ class _ProductManageScreenState extends State<ProductManageScreen> {
                 price:
                     double.parse(products[index][DbHelper.colPrice].toString()),
                 description: products[index][DbHelper.colDescription],
+                imageUrl: products[index][DbHelper.colImageUrl],
                 isFavorite:
                     products[index][DbHelper.colIsFavorite] == 1 ? true : false,
               );
-              return ProductListTile(
-                product: product,
-                deleteItem: deleteItem,
+              return InkWell(
+                onTap: () {
+                  Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (_) => ProductAddEditScreen(
+                      operation: updateItem,
+                      passedProduct: product,
+                    ),
+                  ));
+                },
+                child: ProductListTile(
+                  product: product,
+                  deleteItem: deleteItem,
+                ),
               );
             },
             itemCount: products.length,

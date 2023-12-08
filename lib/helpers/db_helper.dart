@@ -78,4 +78,21 @@ class DbHelper {
     var num = await db.rawDelete('DELETE FROM $tbName WHERE $colId = $id');
     print('deleted $num rows');
   }
+
+  static void updateProduct(Product p) async {
+    print(p.imageUrl);
+    final db = await openDB();
+    db.update(
+      tbName,
+      p.toMap(),
+      where: '$colId = ?',
+      whereArgs: [p.id],
+    );
+  }
+
+  static void updateRaw() async {
+    final db = await openDB();
+    db.rawUpdate(
+        'UPDATE $tbName SET $colImageUrl = \'https://i.ebayimg.com/images/g/nCoAAOSwM6tizj1H/s-l500.jpg\' ');
+  }
 }
